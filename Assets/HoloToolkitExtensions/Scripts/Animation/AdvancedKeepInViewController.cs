@@ -9,28 +9,39 @@ namespace HoloToolkitExtensions.Animation
 {
     public class AdvancedKeepInViewController : MonoBehaviour
     {
+        [Tooltip("The maximum distance to project the object before the camera")]
         public float MaxDistance = 2f;
 
+        [Tooltip("The minimum distance to project the object before the camera")]
         public float MinDistance = 0.2f;
 
+        [Tooltip("The minimum meters per second the user has to move to trigger moving the object to a new location")]
         public float DistanceMoveTrigger = 0.4f;
 
+        [Tooltip("The minimum degrees per second the user has to rotate to trigger moving the object to a new location")]
         public float DeltaRotationTrigger = 15.0f;
 
+        [Tooltip("The extra distance to keep between the object and the obstruction")]
         public float DistanceBeforeObstruction = 0.02f;
 
+        [Tooltip("Enable hiding the object when exceeding HideSpeed m/s")]
         public bool HideWhenMoving = true;
 
+        [Tooltip("The minimum meters per second the user has to move to trigger hiding the object completely")]
         public float HideSpeed = 2.5f;
 
-        public int LayerMask = Physics.DefaultRaycastLayers;
-
+        [Tooltip("The time used to fade out the object when hiding it (and fading it in when it should reappear")]
         private const float FadeTime = 0.4f;
 
+        [Tooltip("The layers to check for obstructions")]
+        public int LayerMask = Physics.DefaultRaycastLayers;
+
+        [Tooltip("Make the object bigger or smaller depending on the distance to the camera")]
         public bool ScaleByDistance = true;
 
         [SerializeField]
-        private bool _appearInView = true;
+        [Tooltip("When the object is enabled, move it in view immediately")]
+        public bool AppearInView = true;
 
         [SerializeField]
         private BaseRayStabilizer _stabilizer;
@@ -107,14 +118,14 @@ namespace HoloToolkitExtensions.Animation
 
         private void DoInitialAppearance()
         {
-            if (!_appearInView)
+            if (!AppearInView)
             {
                 return;
             }
 
             _lastMoveToLocation = GetNewPosition();
             transform.position = _lastMoveToLocation;
-            DoScaleByDistance();
+            MoveAndScale(_lastMoveToLocation);
         }
 
 
