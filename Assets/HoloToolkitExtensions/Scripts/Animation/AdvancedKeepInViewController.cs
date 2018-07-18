@@ -69,13 +69,13 @@ namespace HoloToolkitExtensions.Animation
 
         private bool _isJustEnabled = false;
 
-        private float _initialTransparancy;
+        private float _initialTransparency;
 
         // Use this for initialization
         void Start()
         {
             _objectMaterial = GetComponentInChildren<Renderer>().material;
-            _initialTransparancy = _objectMaterial.color.a;
+            _initialTransparency = _objectMaterial.color.a;
         }
 
         void OnEnable()
@@ -186,15 +186,17 @@ namespace HoloToolkitExtensions.Animation
             {
                 return true;
             }
-            if (CameraMovementTracker.Instance.Speed > HideSpeed && _objectMaterial.color.a != 0.0f)
+            if (CameraMovementTracker.Instance.Speed > HideSpeed && 
+                _objectMaterial.color.a != 0.0f)
             {
                 StartCoroutine(SetFading());
                 LeanTween.alpha(gameObject, 0, FadeTime);
             }
-            else if (CameraMovementTracker.Instance.Speed <= HideSpeed && _objectMaterial.color.a != _initialTransparancy)
+            else if (CameraMovementTracker.Instance.Speed <= HideSpeed && 
+                     _objectMaterial.color.a != _initialTransparency)
             {
                 StartCoroutine(SetFading());
-                LeanTween.alpha(gameObject, _initialTransparancy, FadeTime);
+                LeanTween.alpha(gameObject, _initialTransparency, FadeTime);
                 MoveIntoView();
             }
 
