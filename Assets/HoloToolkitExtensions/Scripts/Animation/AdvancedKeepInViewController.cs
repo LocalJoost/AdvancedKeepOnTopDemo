@@ -126,9 +126,6 @@ namespace HoloToolkitExtensions.Animation
 #endif
         }
 
-
-
-
         private void MoveIntoView()
         {
             if (_isMoving)
