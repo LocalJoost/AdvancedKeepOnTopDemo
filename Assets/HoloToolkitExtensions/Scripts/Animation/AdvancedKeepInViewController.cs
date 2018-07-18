@@ -94,7 +94,6 @@ namespace HoloToolkitExtensions.Animation
 
             _lastMoveToLocation = GetNewPosition();
             transform.position = _lastMoveToLocation;
-            MoveAndScale(_lastMoveToLocation);
         }
 
         void Update()
