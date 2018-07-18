@@ -85,6 +85,17 @@ namespace HoloToolkitExtensions.Animation
             _isJustEnabled = true;
         }
 
+        private void DoInitialAppearance()
+        {
+            if (!AppearInView)
+            {
+                return;
+            }
+
+            _lastMoveToLocation = GetNewPosition();
+            transform.position = _lastMoveToLocation;
+            MoveAndScale(_lastMoveToLocation);
+        }
 
         void Update()
         {
@@ -116,17 +127,7 @@ namespace HoloToolkitExtensions.Animation
 #endif
         }
 
-        private void DoInitialAppearance()
-        {
-            if (!AppearInView)
-            {
-                return;
-            }
 
-            _lastMoveToLocation = GetNewPosition();
-            transform.position = _lastMoveToLocation;
-            MoveAndScale(_lastMoveToLocation);
-        }
 
 
         private void MoveIntoView()
