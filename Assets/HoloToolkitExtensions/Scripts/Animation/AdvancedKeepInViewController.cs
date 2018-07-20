@@ -40,8 +40,12 @@ namespace HoloToolkitExtensions.Animation
         public bool ScaleByDistance = true;
 
         [SerializeField]
-        [Tooltip("When the object is enabled, move it in view immediately")]
+        [Tooltip("When the object is enabled, let it appear in view immediately")]
         public bool AppearInView = true;
+
+        [SerializeField]
+        [Tooltip("After scaling reposition again")]
+        public bool EnableFineTuning = false;
 
         [SerializeField]
         private BaseRayStabilizer _stabilizer;
@@ -142,7 +146,7 @@ namespace HoloToolkitExtensions.Animation
         {
             LeanTween.move(gameObject, newPos, MoveTime).setEaseInOutSine().setOnComplete(() =>
             {
-                if (!isFinalAdjustment)
+                if (!isFinalAdjustment && EnableFineTuning)
                 {
                     newPos = GetNewPosition();
                     MoveAndScale(newPos, true);
