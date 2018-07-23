@@ -40,12 +40,8 @@ namespace HoloToolkitExtensions.Animation
         public bool ScaleByDistance = true;
 
         [SerializeField]
-        [Tooltip("When the object is enabled, let it appear in view immediately")]
+        [Tooltip("When the object is enabled, move it in view immediately")]
         public bool AppearInView = true;
-
-        [SerializeField]
-        [Tooltip("After scaling reposition again")]
-        public bool EnableFineTuning = false;
 
         [SerializeField]
         private BaseRayStabilizer _stabilizer;
@@ -72,6 +68,8 @@ namespace HoloToolkitExtensions.Animation
         private bool _isScaling;
 
         private bool _isJustEnabled = false;
+
+        private bool _isHidden = false;
 
         private float _initialTransparency;
 
@@ -115,7 +113,7 @@ namespace HoloToolkitExtensions.Animation
             }
 
             if (CameraMovementTracker.Instance.Distance > DistanceMoveTrigger ||
-                CameraMovementTracker.Instance.RotationDelta > DeltaRotationTrigger || 
+                CameraMovementTracker.Instance.RotationDelta > DeltaRotationTrigger ||
                 _isJustEnabled)
             {
                 _isJustEnabled = false;
@@ -146,7 +144,7 @@ namespace HoloToolkitExtensions.Animation
         {
             LeanTween.move(gameObject, newPos, MoveTime).setEaseInOutSine().setOnComplete(() =>
             {
-                if (!isFinalAdjustment && EnableFineTuning)
+                if (!isFinalAdjustment)
                 {
                     newPos = GetNewPosition();
                     MoveAndScale(newPos, true);
@@ -177,10 +175,6 @@ namespace HoloToolkitExtensions.Animation
         {
             var newPos = LookingDirectionHelpers.GetObjectBeforeObstruction(gameObject, MaxDistance,
                 DistanceBeforeObstruction, LayerMask, _stabilizer);
-            if (Vector3.Distance(newPos, CameraCache.Main.transform.position) < MinDistance)
-            {
-                newPos = LookingDirectionHelpers.CalculatePositionDeadAhead(MinDistance);
-            }
             return newPos;
         }
 
@@ -190,21 +184,22 @@ namespace HoloToolkitExtensions.Animation
             {
                 return true;
             }
-            if (CameraMovementTracker.Instance.Speed > HideSpeed && 
-                _objectMaterial.color.a != 0.0f)
+            if (CameraMovementTracker.Instance.Speed > HideSpeed &&
+                !_isHidden)
             {
+                _isHidden = true;
                 StartCoroutine(SetFading());
                 LeanTween.alpha(gameObject, 0, FadeTime);
             }
-            else if (CameraMovementTracker.Instance.Speed <= HideSpeed && 
-                     _objectMaterial.color.a != _initialTransparency)
+            else if (CameraMovementTracker.Instance.Speed <= HideSpeed && _isHidden)
             {
+                _isHidden = false;
                 StartCoroutine(SetFading());
                 LeanTween.alpha(gameObject, _initialTransparency, FadeTime);
                 MoveIntoView();
             }
 
-            return _objectMaterial.color.a != 0.0f;
+            return !_isHidden;
         }
 
         private IEnumerator SetFading()
